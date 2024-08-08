@@ -1,0 +1,114 @@
+#!/bin/env bash
+black="\e[30m"
+red="\033[31m"
+green="\033[32m"
+yellow="\033[33m"
+blue="\033[34m"
+purple="\033[35m"
+cyan="\033[36m"
+white="\033[37m"
+background="\033[0m"
+
+if [ ! "$(uname)" = "Linux" ];then
+    echo -e ${red}请使用linux!${background}
+    exit
+fi
+
+function Update(){
+if [ -z ${Update} ]
+then
+  Command=$@
+  ${Command}
+  Update=true
+fi
+}
+
+function InstallPKG(){
+echo -e ${green}正在安装必要依赖 $1${background}
+if [ $(command -v apt) ]
+then
+  Update apt -y update
+  apt install -y $1
+elif [ $(command -v apt-get) ]
+then
+  Update apt -y update
+  apt-get install -y $1
+elif [ $(command -v pacman) ]
+then
+  Update pacman -Sy
+  pacman -S --noconfirm --needed $1
+elif [ $(command -v dnf) ]
+then
+  Update dnf -y update
+  dnf install -y $1
+elif [ $(command -v yum) ]
+then
+  Update yum -y update
+  yum install -y $1
+elif [ $(command -v apk) ]
+  Update apk update
+  apk add --no-cache $1
+elif [ $(command -v zypper) ]
+  Update zypper refresh
+  zypper --non-interactive install $1
+else
+  echo -e ${red}暂不支持的发行版${background}
+  exit
+fi
+}
+
+function CheckPKG(){
+if [ ! -x "$(command -v whiptail)" ] && [ ! -x "$(command -v dialog)" ]
+then
+  InstallPKG dialog
+fi
+if [ ! -x "$(command -v git)" ]
+then
+  InstallPKG git
+fi
+}
+
+function Install(){
+if [ -d AFYZ ]
+then
+  cd $AFHOME
+  git fetch --all
+  git reset --hard main
+  git pull
+else
+  if ! git clone --depth=1 ${GithubMirror}https://github.com/ArcticFox520/Yunzai-Bot-Script ./AFYZ
+  then
+    echo -e ${red} - ${yellow}出现错误${background}
+    exit
+  fi
+fi
+cd AFYZ
+chmod +x afyz
+AF_HOME_Path="$(pwd)"
+cp -f afyz /usr/local/bin/afyz
+sed -i "s|AF_HOME_Path|${AF_HOME_Path}|g" /usr/local/bin/afyz
+
+echo -e ${yellow} - ${yellow}安装成功${background}
+echo -e ${yellow} - ${cyan}请使用 ${green}afyz ${cyan}命令 打开脚本${background}
+}
+
+echo -e ${white}"====="${green}白狐-Script${white}"====="${background}
+echo -e ${cyan}白狐 Script ${green}是完全可信的。${background}
+echo -e ${cyan}白狐 Script ${yellow}不会执行任何恶意命令${background}
+echo -e ${cyan}白狐 Script ${yellow}不会执行任何恶意命令${background}
+echo -e ${cyan}白狐 Script ${yellow}不会执行任何恶意命令${background}
+echo -e ${cyan}如果您同意安装 请输入 ${green}同意安装${background}
+echo -e ${cyan}注意：同意安装即同意本项目的用户协议${background}
+echo -e ${cyan}用户协议链接: ${background}
+echo -e ${cyan}https://raw.githubusercontent.com/ArcticFox520/Yunzai-Bot-Script/main/用户协议.txt${background}
+echo -e ${white}"=========================="${background}
+echo -en ${green}请输入:${background}
+read yn
+if [ "${yn}" == "同意安装" ];then
+    echo -e ${green}3秒后开始安装${background}
+    sleep 2s
+    
+    Install
+else
+    echo -e ${red}程序终止!! 脚本停止运行${background}
+fi

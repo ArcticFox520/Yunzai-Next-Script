@@ -1,0 +1,33 @@
+#!/bin/env bash
+source config
+Package=("tar" "gzip" "xz" "tmux" "screen" "wget" "curl" "pv" "git" "redis" "jq")
+for PKG in ${Package[@]}
+do
+  if ! apk info ${PKG} >/dev/null 2>&1
+  then
+    echo -e ${green}正在安装 ${yellow}${PKG}${background}
+    until apk add --allow-untrusted ${PKG}
+    do
+      echo -e ${red}安装失败 3秒后重试${background}
+      sleep 3s
+    done
+    echo -e ${green}安装完成${background}
+  fi
+done
+
+echo -e ${green}正在安装 ${yellow}NodeJS${background}
+until apk add --allow-untrusted nodejs-lts
+do
+  echo -e ${red}安装失败 3秒后重试${background}
+  sleep 3s
+done
+echo -e ${green}安装完成${background}
+
+echo -e ${green}正在安装 ${yellow}chromium${background}
+until apk add --allow-untrusted chromium
+do
+  echo -e ${red}安装失败 3秒后重试${background}
+  sleep 3s
+done
+echo -e ${green}安装完成${background}
+

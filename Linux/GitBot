@@ -1,0 +1,22 @@
+#!/bin/env bash
+source config
+
+if ! CheckNetwork
+then
+  unset GithubMirror
+fi
+
+if [ ! -d YunzaiJS ]
+  echo -e ${cyan}正在克隆Yunzai-Next${background}
+  if ! git clone --depth=1 ${GithubMirror}https://github.com/yunzai-org/yunzaijs.git ./YunzaiJS
+  then
+    echo -e ${red}克隆失败${background}
+    exit
+  fi
+fi
+
+if [ ! -d YunzaiJS/node_modules ]
+  cd YunzaiJS
+  yarn install
+  yarn build
+fi

@@ -1,0 +1,24 @@
+#!/bin/env bash
+source config
+
+if [ $(command -v dnf) ];then
+  pkg_install="dnf"
+elif [ $(command -v yum) ];then
+  pkg_install="yum"
+fi
+
+Package=("tar" "gzip" "xz" "tmux" "screen" "wget" "curl" "pv" "git" "redis" "chromium")
+for PKG in ${Package[@]}
+do
+  if ! ${pkg_install} list installed ${PKG} >/dev/null 2>&1
+  then
+    echo -e ${green}正在安装 ${yellow}${PKG}${background}
+    pacman_Syyu
+    until pacman -S --noconfirm --needed ${PKG}
+    do
+      echo -e ${red}安装失败 3秒后重试${background}
+      sleep 3s
+    done
+    echo -e ${green}安装完成${background}
+  fi
+done

@@ -2,19 +2,19 @@
 source config
 
 if [ $(command -v dnf) ];then
-  pkg_install="dnf"
+  pkg="dnf"
 elif [ $(command -v yum) ];then
-  pkg_install="yum"
+  pkg="yum"
 fi
 
-Package=("tar" "gzip" "xz" "tmux" "screen" "wget" "curl" "pv" "git" "redis" "chromium")
+Package=("tar" "gzip" "xz" "tmux" "screen" "wget" "curl" "pv" "git" "jq" "redis" "chromium")
 for PKG in ${Package[@]}
 do
-  if ! ${pkg_install} list installed ${PKG} >/dev/null 2>&1
+  Update 
+  if ! ${pkg} list installed ${PKG} >/dev/null 2>&1
   then
     echo -e ${green}正在安装 ${yellow}${PKG}${background}
-    pacman_Syyu
-    until pacman -S --noconfirm --needed ${PKG}
+    until ${pkg} install -y ${PKG}
     do
       echo -e ${red}安装失败 3秒后重试${background}
       sleep 3s

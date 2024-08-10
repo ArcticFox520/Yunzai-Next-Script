@@ -24,15 +24,19 @@ else
   NPMMirror="https://registry.npmjs.org"
 fi
 
-Download NodeJS.tar.xz ${NodeJSURL}
-
+if Download NodeJS.tar.xz ${NodeJSURL}
+then
+  echo -e ${yellow}正在解压 ${cyan}NodeJS.tar.xz${background}
+else
+  echo -e ${red}解压失败${background}
+  ErrorReturn
+fi
 mkdir NodeJS
 pv NodeJS.tar.xz | tar -Jxf - -C NodeJS
 rm -rvf NodeJS.tar.xz
 rm -rf /usr/local/NodeJS > /dev/null 2>&1
 mv NodeJS/$(ls NodeJS) /usr/local/NodeJS
 rm -rf NodeJS
-mkdir -p /root/.local/share/pnpm
 echo '
 #Node.JS
 export PATH=$PATH:/usr/local/NodeJS/bin
@@ -52,15 +56,8 @@ yarn config set registry ${NPMMirror}
 echo -e ${green}已设置为 ${yellow}npmmirror${background}
 
 echo -e ${green}正在安装 ${yellow}PNM2${background}
-i=0
 until npm install -g pm2
 do
-  if [ ${i} == 3 ]
-  then
-    echo -e ${cyan}错误次数过多 ${yellow}退出${background}
-    exit
-  fi
-  i=$((${i}+1))
   echo -e ${cyan}安装失败 ${yellow}三秒后重试${background}
   sleep 3s
 done

@@ -3,6 +3,7 @@ source config
 Package=("tar" "gzip" "xz" "tmux" "screen" "wget" "curl" "pv" "git" "redis" "jq")
 for PKG in ${Package[@]}
 do
+  Update apk update
   if ! apk info ${PKG} >/dev/null 2>&1
   then
     echo -e ${green}正在安装 ${yellow}${PKG}${background}

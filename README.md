@@ -1,4 +1,4 @@
-# 🍥 ArcticFox Script
+# 🍥 Yunzai-Next Script
 > 这是一个适用于Yunzai-Next自动化部署及管理脚本。
 ---
 > 宗旨: 化繁为简、轻装上阵。
@@ -17,17 +17,17 @@
     - [x] Debian 12 (Bookworm)
     - [x] Debian 11 (Bullseye)
   - CentOS
-    - [ ] CentOS 9-Stream
-    - [ ] CentOS 8-Stream
+    - [x] CentOS 9-Stream
+    - [x] CentOS 8-Stream
   - [x] Arch
-  - [ ] MSYS2
+  - [x] MSYS2
   - [ ] Docker
 - 次要 Minor
   - [ ] Manjaro
   - [x] Alpine
   - [ ] OpenSUSE
   - [ ] Fedora
-  - [ ] Kali Rolling
+  - [x] Kali Rolling
 ---
 
 ## 功能 Function

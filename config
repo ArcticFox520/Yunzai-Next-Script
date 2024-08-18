@@ -1,3 +1,4 @@
+#!/bin/env bash
 black="\e[30m"
 red="\033[31m"
 green="\033[32m"
@@ -14,6 +15,19 @@ if [ -x /usr/local/NodeJS/bin/node ]
 then
   export PATH=$PATH:/usr/local/NodeJS/bin
 fi
+
+if [ $HOME/AFHOME ]
+then
+  export PATH=$PATH:$HOME/AFHOME/AFYN/
+  export PATH=$PATH:$HOME/AFHOME/
+  export PATH=$PATH:$HOME/AFHOME/chrome-win/
+  export PATH=$PATH:/usr/local/NodeJS/bin/
+  export PATH=$PATH:/usr/local/Redis/
+fi
+
+function MenuTips(){
+  echo "当前时期 $(date +"%Y-%m-%d %H:%M") | 请选择操作"
+}
 
 function Download(){
 file="$1"
@@ -53,8 +67,37 @@ else
 fi
 }
 
+function MenuSize(){
+local HEIGHT=$(($(tput lines) - 10))
+local WIDTH=$(($(tput cols) - 10))
+local OPTION=$((${HEIGHT} - 8))
+if (( $HEIGHT <= 8 ));then
+  echo -e ${blue}[${red}*${blue}] ${cyan}您的屏幕高度过低.${background}
+  exit
+fi
+if (( $WIDTH <= 0 ));then
+  echo -e ${blue}[${red}*${blue}] ${cyan}您的屏幕宽度度过窄.${background}
+  exit
+fi
+echo ${HEIGHT} ${WIDTH} ${OPTION}
+}
+
+function MsgboxSize(){
+local HEIGHT=$(($(tput lines) - 30))
+local WIDTH=$(($(tput cols) - 10))
+if (( $HEIGHT <= 0 ));then
+  echo -e ${blue}[${red}*${blue}] ${cyan}您的屏幕高度过低.${background}
+  exit
+fi
+if (( $WIDTH <= 0 ));then
+  echo -e ${blue}[${red}*${blue}] ${cyan}您的屏幕宽度度过窄.${background}
+  exit
+fi
+echo ${HEIGHT} ${WIDTH}
+}
+
 Arch(){
-case `dpkg --print-architecture` in
+case `uname -m` in
 aarch64|arm64)
 	echo arm64
 	;;
@@ -102,7 +145,7 @@ echo && echo -en " ${cyan}Yunzai-Next ${purple}一键安装管理脚本${backgro
   esac
 }
 
-CheckNetwork(){
+function CheckNetwork(){
 country=$(curl -sL ipinfo.io  | jq .country)
 if [ -n ${country} ]
 then
@@ -131,7 +174,177 @@ then
 fi
 }
 
-ManageSession(){
+function TUISoftware(){
+if [ -x "$(command -v whiptail)" ];then
+  echo whiptail
+elif [ -x "$(command -v dialog)" ];then
+  echo dialog
+else
+  echo -e ${red}没有TUI软件${background}
+  exit 1
+fi
+}
+
+function Session(){
+  jq .SelectManageSession ../config.json | sed 's|"||g'
+}
+
+function PsAll(){
+  ps all | sed '/grep/d' | sed '/dialog/d' | sed '/whiptail/d' | grep -q $2
+}
+
+function CheckStatus(){
+if tmux ls 2>&1 | grep -q $1
+then
+  return 1
+elif screen -ls 2>&1 | grep -q $1
+then
+  return 2
+elif pm2 list 2>&1 | sed '/stopped/d' | grep -q $3
+then
+  return 3
+elif PsAll
+then
+  return 4
+else
+  return 0
+fi
+}
+
+function StopBot(){
+CheckStatus $1 $2 $3
+case $? in
+1)
+  if ManageSession tmux stop $1
+  then
+    return 0
+  else
+    return 1
+  fi
+  ;;
+2)
+  if ManageSession screen stop $1
+  then
+    return 0
+  else
+    return 1
+  fi
+  ;;
+3)
+  if ManageSession pm2 stop $3
+  then
+    return 0
+  else
+    return 1
+  fi
+  ;;
+4)
+  PID=$(ps all | sed '/grep/d' | sed '/dialog/d' | sed '/whiptail/d' | grep $2 | awk '{print $1}')
+  kill -9 ${PID}
+  ;;
+esac
+}
+
+function RestartBot(){
+CheckStatus $1 $2 $3
+case $? in
+1)
+  if ManageSession tmux restart $1
+  then
+    return 0
+  else
+    return 1
+  fi
+  ;;
+2)
+  if ManageSession screen restart $1
+  then
+    return 0
+  else
+    return 1
+  fi
+  ;;
+3)
+  if ManageSession pm2 restart $3
+  then
+    return 0
+  else
+    return 1
+  fi
+  ;;
+4)
+  PID=$(ps all | sed '/grep/d' | sed '/dialog/d' | sed '/whiptail/d' | grep $2 | awk '{print $1}')
+  kill -9 ${PID}
+  START $1 $3
+  ;;
+esac
+}
+
+function LogBot(){
+CheckStatus $1 $2 $3
+case $? in
+1)
+  if ManageSession tmux log $1
+  then
+    return 0
+  else
+    return 1
+  fi
+  ;;
+2)
+  if ManageSession screen log $1
+  then
+    return 0
+  else
+    return 1
+  fi
+  ;;
+3)
+  if ManageSession pm2 log $3
+  then
+    return 0
+  else
+    return 1
+  fi
+  ;;
+4)
+  echo $1 [前台] 启动
+  return 1
+  ;;
+esac
+}
+
+function StartType(){
+CheckStatus $1 $2 $3
+case $? in
+1)
+  $(TUISoftware) --title "AF-IdentifyType" \
+  --msgbox "$3 已在 [Tmux] 中启动" \
+  $(MsgboxSize)
+  return 1
+;;
+2)
+  $(TUISoftware) --title "AF-IdentifyType" \
+  --msgbox "$3 已在 [Screen] 中启动" \
+  $(MsgboxSize)
+  return 2
+;;
+3)
+  $(TUISoftware) --title "AF-IdentifyType" \
+  --msgbox "$3 已在 [Pm2] 中启动" \
+  $(MsgboxSize)
+  return 3
+;;
+4)
+  $(TUISoftware) --title "AF-IdentifyType" \
+  --msgbox "$3 已在 [前台] 中启动" \
+  $(MsgboxSize)
+  return 4
+;;
+esac
+}
+
+function ManageSession(){
 case $1 in
 tmux)
   case $2 in
@@ -269,4 +482,83 @@ pm2)
   esac
 ;;
 esac
+}
+
+function CheckRedisServer(){
+function PedisCliPing(){
+if [ "$(redis-cli ping 2>&1)" == "PONG" ]
+then
+  return 0
+else
+  return 1
+fi
+}
+if $(PedisCliPing)
+then
+  echo -e ${cyan} Redis-Server${yellow} 已经启动${background}
+else
+  echo -e ${cyan} Redis-Server${yellow} 正在启动${background}
+  $(nohup redis-server 2>&1 &)
+  until PedisCliPing
+  do
+    sleep 0.2s
+  done
+  echo -e ${cyan} Redis-Server${yellow} 启动成功${background}
+fi
+}
+
+function START(){
+  local Command=$1
+  ${Command}
+  if pm2 list 2>&1 | grep $2 | grep -q online
+  then
+    pm2 delete $2 > /dev/null 2>&1
+    START $1 $2
+  fi
+}
+
+function ProgressBar(){
+  {
+    i=0
+    until CheckStatus $1 $2 $3
+    do
+      echo $((i++))
+      if [ ${i} == 100 ]
+      then
+        return 1
+      fi
+    done
+    return 0
+  } | $(TUISoftware) --gauge "${BotName} [正在启动]" $(MsgboxSize)
+}
+
+function CheckPath(){
+  local Name=($@)
+  for i in ${Name[@]}
+  do
+    if [ -d "$HOME/$1" ]
+    then
+    
+    elif [ -d "$HOME/$1" ]
+    elif [ -d "$1" ];then
+      return 0
+    else
+        return 1
+    fi
+  done
+  return 1
+}
+
+function CheckInstall(){
+  case $1 in
+  YN)
+    if CheckPath Yunzai-Next
+    ;;
+  MZ)
+    
+    ;;
+  TZ)
+    
+    ;;
+  esac
 }

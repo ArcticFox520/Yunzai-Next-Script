@@ -41,24 +41,3 @@ echo '
 #Node.JS
 export PATH=$PATH:/usr/local/NodeJS/bin
 ' >> /etc/profile
-
-echo -e ${yellow}正在设置NPM ${cyan}默认仓库${background}
-npm config set registry ${NPMMirror}
-npm config set registry ${NPMMirror}
-npm install -g npm@latest
-echo -e ${yellow}已设置为 ${cyan}npmmirror${background}
-
-echo -e ${yellow}正在安装 ${cyan}YARN${background}
-npm install -g yarn
-echo -e ${yellow}正在设置PNPM ${cyan}默认仓库${background}
-yarn config set registry ${NPMMirror}
-yarn config set registry ${NPMMirror}
-echo -e ${green}已设置为 ${yellow}npmmirror${background}
-
-echo -e ${green}正在安装 ${yellow}PNM2${background}
-until npm install -g pm2
-do
-  echo -e ${cyan}安装失败 ${yellow}三秒后重试${background}
-  sleep 3s
-done
-echo -e ${green}安装完成${background}

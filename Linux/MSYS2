@@ -185,10 +185,10 @@ echo -e ${green}安装完成${background}
 
 if ! grep -q "AFHOME" /etc/profile
 then
-  echo '# NodeJS
-  PATH=$PATH:$HOME/AFHOME
-  PATH=$PATH:$HOME/AFHOME/chrome-win
-  PATH=$PATH:/usr/local/NodeJS/bin
+  echo '
+  PATH=$PATH:$HOME/AFHOME/
+  PATH=$PATH:$HOME/AFHOME/chrome-win/
+  PATH=$PATH:/usr/local/NodeJS/bin/
   PATH=$PATH:/usr/local/Redis/
   ' >> /etc/profile
 fi
@@ -206,7 +206,6 @@ AF_HOME_Path="$(pwd)"
 sed -i "s|AF_HOME_Path|${AF_HOME_Path}|g" /usr/bin/afyn
 if ! grep -q "AFYN" /etc/profile
 then
-  echo 'PATH=$PATH:$HOME/AFHOME/AFYN' >> /etc/profile
-  echo 'afyn' >> /etc/profile
+  echo 'PATH=$PATH:$HOME/AFHOME/AFYN/' >> /etc/profile
 fi
 export AFHOME=${AF_HOME_Path}

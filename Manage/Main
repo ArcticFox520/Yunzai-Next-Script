@@ -210,7 +210,8 @@ case ${Number} in
 ;;
 esac
 }
-function MainMenu(){  
+
+function MainMenu(){
 Number=$($(TUISoftware) \
 --title "AF-Shell" \
 --menu "$(MenuTips)" \
@@ -233,7 +234,10 @@ case ${Number} in
       Pm2Name="yunzai-next"
       SecondMenu
     else
-      Install
+      if ! bash ../Install
+      then
+        exit 1
+      fi
     fi
     ;;
   0)

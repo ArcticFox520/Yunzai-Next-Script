@@ -4,7 +4,7 @@ Package=("tar" "gzip" "xz-utils" "tmux" "screen" "wget" "curl" "pv" "git" "redis
 for PKG in ${Package[@]}
 do
   Update apk -y update
-  if ! dpkg -s ${PKG} >/dev/null 2>&1
+  if ! dpkg -s ${PKG} > /dev/null 2>&1
   then
     echo -e ${green}正在安装 ${yellow}${PKG}${background}
     until apt install -y ${PKG}
@@ -31,13 +31,33 @@ esac
 Update apt -y update
 
 function ChromiumInstall(){
-local SigningKeyFingerprint="5301FA4FD93244FBC6F6149982BB6851C64F6880"
-local file="/etc/apt/sources.list.d/launchpad.list"
-local URL="https://launchpad.proxy.ustclug.org/xtradeb/apps/ubuntu"
-echo "deb ${URL} $1 main" > ${file}
-if ! apt-key adv --keyserver keyserver.ubuntu.com --recv-keys ${SigningKeyFingerprint}
+if ! dpkg -s gpg > /dev/null 2>&1
 then
-  ErrorReturn
+  apt install -y gpq
+fi
+if CheckNetwork
+then
+  SourcesListFile="/etc/apt/sources.list.d/xtradeb-ubuntu-apps-jammy.list"
+  SourcesList="deb https://launchpad.proxy.ustclug.org/xtradeb/apps/ubuntu/ $1 main"
+  GpgFilePath="/etc/apt/trusted.gpg.d/xtradeb-ubuntu-apps.gpg"
+  GpgFileURL="https://pgp.mit.edu/pks/lookup?op=get&search=0x5301FA4FD93244FBC6F6149982BB6851C64F6880"
+  echo ${SourcesList} > ${SourcesListFile}
+  Download xtradeb-ubuntu-apps.gpg ${GpgFileURL}
+  gpg --dearmor -o ${GpgFilePath} xtradeb-ubuntu-apps.gpg
+  apt -y update
+  apt install -y chromium
+else
+  if ! dpkg -s software-properties-common > /dev/null 2>&1
+  then
+    apt install -y software-properties-common
+  fi
+  until add-apt-repository ppa:xtradeb/apps
+  do
+    echo -e ${red}添加PPA仓库失败 3秒后重试${background}
+    sleep 3s
+  done
+  apt -y update
+  apt install -y chromium
 fi
 }
 

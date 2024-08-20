@@ -533,17 +533,13 @@ function ProgressBar(){
 }
 
 function CheckPath(){
-  local Name=($@)
+  local Name=$@
   for i in ${Name[@]}
   do
-    if [ -d "$HOME/$1" ]
+    if [ -d "$HOME/$1/node_modules" ]
     then
-    
-    elif [ -d "$HOME/$1" ]
-    elif [ -d "$1" ];then
+      cd "$HOME/$1"
       return 0
-    else
-        return 1
     fi
   done
   return 1
@@ -552,13 +548,28 @@ function CheckPath(){
 function CheckInstall(){
   case $1 in
   YN)
-    if CheckPath Yunzai-Next
+    if CheckPath Yunzai-Next yunzaijs
+    then
+      return 0
+    else
+      return 1
+    fi
     ;;
   MZ)
-    
+    if CheckPath Miao-Yunzai
+    then
+      return 0
+    else
+      return 1
+    fi
     ;;
   TZ)
-    
+    if CheckPath TRSS-Yunzai Yunzai
+    then
+      return 0
+    else
+      return 1
+    fi
     ;;
   esac
 }

@@ -155,7 +155,7 @@ then
   rm -rf $HOME/AFProotFile
 fi
 
-if git clone --depth=1 ${GithubMirror}https://github.com/ArcticFox520/Yunzai-Next-Script $HOME/AFProotFile
+if git clone --depth=1 ${GithubMirror}https://github.com/ArcticFox520/ $HOME/AFProotFile
 then
   mv $HOME/AFProotFile/Proot/Install $HOME/AF-Proot/${Linux}-${Version}/root/Install
   mkdir /data/data/com.termux/files/home/AF-Proot/proc/

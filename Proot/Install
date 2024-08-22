@@ -154,15 +154,11 @@ mkdir -p /root/.local/share/pnpm
 echo '
 #Node.JS
 export PATH=$PATH:/usr/local/NodeJS/bin
-export PATH=$PATH:/root/.local/share/pnpm
-export PNPM_HOME=/root/.local/share/pnpm
 ' >> /etc/profile
 
 echo -e ${green}NodeJS ${yellow}安装完成${background}
 
 export PATH=$PATH:/usr/local/NodeJS/bin
-export PATH=$PATH:/root/.local/share/pnpm
-export PNPM_HOME=/root/.local/share/pnpm
 
 echo -e ${green}正在设置NPM ${yellow}默认仓库${background}
 NPMMirror="https://registry.npmmirror.com"
@@ -171,30 +167,23 @@ npm config set registry ${NPMMirror}
 npm install -g npm@latest
 echo -e ${green}已设置为 ${yellow}npmmirror${background}
 
-echo -e ${green}正在安装 ${yellow}PNPM${background}
-npm install -g pnpm
+echo -e ${green}正在安装 ${yellow}YARN${background}
+npm install -g yarn
 echo -e ${green}正在设置PNPM ${yellow}默认仓库${background}
-pnpm config set registry ${NPMMirror}
-pnpm config set registry ${NPMMirror}
+yarn config set registry ${NPMMirror}
+yarn config set registry ${NPMMirror}
 echo -e ${green}已设置为 ${yellow}npmmirror${background}
 
 echo -e ${green}正在安装 ${yellow}PNM2${background}
-i=0
-until pnpm install -g pm2
+until yarn install -g pm2
 do
-  if [ ${i} == 3 ]
-  then
-    echo -e ${cyan}错误次数过多 ${yellow}退出${background}
-    exit
-  fi
-  i=$((${i}+1))
   echo -e ${cyan}安装失败 ${yellow}三秒后重试${background}
   sleep 3s
 done
 echo -e ${green}安装完成${background}
 
 echo -e ${green}正在安装 ${yellow}yq${background}
-URL="${GithubMirror}/https://github.com/mikefarah/yq/releases/download/v4.44.2/yq_linux_arm64"
+URL="https://mirrors.chenby.cn/https://github.com/mikefarah/yq/releases/download/v4.44.2/yq_linux_arm64"
 Download yq ${URL}
 mv yq /usr/local/bin/yq
 chmod +x /usr/local/bin/yq
@@ -210,22 +199,14 @@ mv -f ffprobe /usr/local/bin/ffprobe
 echo -e ${green}安装完成${background}
 
 echo -e ${green}开始安装 ${yellow}ArcticFox Script${background}
-URL="https://ipinfo.io"
-Address=$(curl -sL ${URL} | sed -n 's/.*"country": "\(.*\)",.*/\1/p')
-if [ "${Address}" = "CN" ]
-then
-  GithubMirror="https://gh.arcticfox.top/"
-else
-  unset GithubMirror
-fi
-until git clone --depth=1 ${GithubMirror}https://github.com/ArcticFox520/Yunzai-Bot-Script ./AFYZ
+until git clone --depth=1 https://mirrors.chenby.cn/https://github.com/ArcticFox520/Yunzai-Next-Script ./AFYN
 do
   echo -e ${red} - ${red}克隆错误 ${cyan}3秒后重试${background}
   sleep 3s
 done
-cd AFYZ
-chmod +x afyz
+cd AFYN
+chmod +x afyn
 AF_HOME_Path="$(pwd)"
-sed -i "s|AF_HOME_Path|${AF_HOME_Path}|g" afyz
-mv -f afyz /usr/local/bin/afyz
+sed -i "s|AF_HOME_Path|${AF_HOME_Path}|g" afyn
+mv -f afyz /usr/local/bin/afyn
 echo -e ${yellow} - ${yellow}安装成功${background}

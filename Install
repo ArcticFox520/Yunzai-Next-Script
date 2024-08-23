@@ -18,115 +18,129 @@ ${white}————————————————————${background
 read
 return 1
 }
+function Universal(){
+  if ! bash ../Linux/NodeJS
+  then
+    ErrorReturn
+  fi  
+  if ! bash ../Linux/FFmpeg
+  then
+    ErrorReturn
+  fi
+  if ! bash ../Linux/Fonts
+  then
+    ErrorReturn
+  fi
+}
 
 if grep -i -q "Ubuntu" /etc/os-release
 then
-  if ! bash Linux/Ubuntu
+  if ! bash ../Linux/Ubuntu
   then
     ErrorReturn
   fi
-  if ! bash Linux/Ubuntu
-  then
-    ErrorReturn
-  fi
+  Universal
 elif grep -i -q "Debian" /etc/os-release
 then
-  if ! bash Linux/Debian
+  if ! bash ../Linux/Debian
   then
     ErrorReturn
   fi
+  Universal
 elif grep -i -q "CentOS" /etc/os-release
 then
-  if ! bash Linux/CentOS
+  if ! bash ../Linux/CentOS
   then
     ErrorReturn
   fi
+  Universal
 elif grep -i -q "Arch" /etc/os-release
 then
-  if ! bash Linux/Arch
+  if ! bash ../Linux/Arch
   then
     ErrorReturn
   fi
+  Universal
 elif grep -i -q "Kali" /etc/os-release
 then
-  if ! bash Linux/Kali
+  if ! bash ../Linux/Kali
   then
     ErrorReturn
   fi
+  Universal
 elif grep -i -q "Alpine" /etc/os-release
 then
-  if ! bash Linux/Alpine
+  if ! bash ../Linux/Alpine
   then
     ErrorReturn
   fi
 else
-  echo -e ${red}不受支持的发行版${background}
+  echo -e ${red}暂时不受支持的发行版${background}
   exit 1
 fi
-
 
 function a(){
 if grep -i -q "Ubuntu" /etc/os-release
 then
-  if ! bash Linux/Ubuntu
+  if ! bash ../Linux/Ubuntu
   then
     ErrorReturn
   fi
-  if ! bash Linux/Ubuntu
+  if ! bash ../Linux/Ubuntu
   then
     ErrorReturn
   fi
 elif grep -i -q "Debian" /etc/os-release
 then
-  if ! bash Linux/Debian
+  if ! bash ../Linux/Debian
   then
     ErrorReturn
   fi
 elif grep -i -q "CentOS" /etc/os-release
 then
-  if ! bash Linux/CentOS
+  if ! bash ../Linux/CentOS
   then
     ErrorReturn
   fi
 elif grep -i -q "Arch" /etc/os-release
 then
-  if ! bash Linux/Arch
+  if ! bash ../Linux/Arch
   then
     ErrorReturn
   fi
 elif grep -i -q "Manjaro" /etc/os-release
 then
-  if ! bash Linux/Manjaro
+  if ! bash ../Linux/Manjaro
   then
     ErrorReturn
   fi
 elif grep -i -q "openSUSE" /etc/os-release
 then
-  if ! bash Linux/openSUSE
+  if ! bash ../Linux/openSUSE
   then
     ErrorReturn
   fi
 elif grep -i -q "Fedora" /etc/os-release
 then
-  if ! bash Linux/Fedora
+  if ! bash ../Linux/Fedora
   then
     ErrorReturn
   fi
 elif grep -i -q "Kali" /etc/os-release
 then
-  if ! bash Linux/Kali
+  if ! bash ../Linux/Kali
   then
     ErrorReturn
   fi
 elif grep -i -q "Alpine" /etc/os-release
 then
-  if ! bash Linux/Alpine
+  if ! bash ../Linux/Alpine
   then
     ErrorReturn
   fi
 elif grep -i -q "MSYS2" /etc/os-release
 then
-  if ! bash Linux/MSYS2
+  if ! bash ../Linux/MSYS2
   then
     ErrorReturn
   fi

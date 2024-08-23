@@ -1,9 +1,9 @@
 #!/bin/env bash
-source config
+source ../config
 Package=("tar" "gzip" "xz-utils" "tmux" "screen" "wget" "curl" "pv" "git" "redis-server" "jq")
 for PKG in ${Package[@]}
 do
-  Update apk -y update
+  Update apt -y update
   if ! dpkg -s ${PKG} > /dev/null 2>&1
   then
     echo -e ${green}正在安装 ${yellow}${PKG}${background}
@@ -15,7 +15,13 @@ do
     echo -e ${green}安装完成${background}
   fi
 done
-
+if command -v chromium > /dev/null 2>&1
+then
+  exit 0
+elif command -v chromium-browser > /dev/null 2>&1
+then
+  exit 0
+fi
 case `dpkg --print-architecture` in
 aarch64|arm64)
 	Arch="arm64"
@@ -27,25 +33,24 @@ x86_64|x64|amd64)
 	echo -e ${red}暂不支持的架构 ${cyan}$(dpkg --print-architecture)${background}
 	exit
 esac
-
 Update apt -y update
-
 function ChromiumInstall(){
-if ! dpkg -s gpg > /dev/null 2>&1
+if ! dpkg -s gnupg > /dev/null 2>&1
 then
-  apt install -y gpq
+  apt install -y gnupg
 fi
 if CheckNetwork
 then
   SourcesListFile="/etc/apt/sources.list.d/xtradeb-ubuntu-apps-jammy.list"
   SourcesList="deb https://launchpad.proxy.ustclug.org/xtradeb/apps/ubuntu/ $1 main"
   GpgFilePath="/etc/apt/trusted.gpg.d/xtradeb-ubuntu-apps.gpg"
-  GpgFileURL="https://pgp.mit.edu/pks/lookup?op=get&search=0x5301FA4FD93244FBC6F6149982BB6851C64F6880"
+  GpgFileURL='https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x5301fa4fd93244fbc6f6149982bb6851c64f6880'
   echo ${SourcesList} > ${SourcesListFile}
-  Download xtradeb-ubuntu-apps.gpg ${GpgFileURL}
+  Download xtradeb-ubuntu-apps.gpg "${GpgFileURL}"
   gpg --dearmor -o ${GpgFilePath} xtradeb-ubuntu-apps.gpg
   apt -y update
   apt install -y chromium
+  rm -rf xtradeb-ubuntu-apps.gpg
 else
   if ! dpkg -s software-properties-common > /dev/null 2>&1
   then
@@ -60,7 +65,6 @@ else
   apt install -y chromium
 fi
 }
-
 if grep -q -i focal /etc/os-release
 then
   if ! bash <(curl https://gitee.com/baihu433/chromium/raw/master/chromium.sh)

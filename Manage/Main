@@ -21,7 +21,7 @@ case ${Number} in
 1)
   if StartType ${BotName} ${COMMAND} ${Pm2Name}
   then
-    if Error=$(ManageSession $(Session) start "${BotName}" "$(START ${StartCommand} ${Pm2Name})")
+    if Error=$(ManageSession $(Session) start "${BotName}" "$(START '${StartCommand}' ${Pm2Name})")
     then
       if ProgressBar ${BotName} ${COMMAND} ${Pm2Name}
       then
@@ -58,8 +58,7 @@ case ${Number} in
 2)
   if StartType ${BotName} ${COMMAND} ${Pm2Name}
   then
-    CheckRedisServer
-    START ${StartCommand} ${Pm2Name}
+    START "${StartCommand}" ${Pm2Name}
   else
     SecondMenu
   fi
@@ -149,15 +148,15 @@ case ${Number} in
 6)
   case $(jq .name package.json) in
   "yunzai-next")
-    bash YN-Plugin
+    bash ${AFHOME}/Manage/YN-Plugin
     SecondMenu
     ;;
   "miao-yunzai")
-    bash MY-Plugin
+    bash ${AFHOME}/Manage/Plugin
     SecondMenu
     ;;
   "trss-yunzai")
-    bash TY-Plugin
+    bash ${AFHOME}/Manage/Plugin
     SecondMenu
     ;;
   esac
@@ -188,15 +187,15 @@ case ${Number} in
 8)
   case $(jq .name package.json) in
   "yunzai-next")
-    bash YN-Function
+    bash ${AFHOME}/Manage/Function ${TitleText}
     SecondMenu
     ;;
   "miao-yunzai")
-    bash MY-Function
+    bash ${AFHOME}/Manage/Function ${TitleText}
     SecondMenu
     ;;
   "trss-yunzai")
-    bash TY-Function
+    bash ${AFHOME}/Manage/Function ${TitleText}
     SecondMenu
     ;;
   esac
@@ -210,7 +209,55 @@ case ${Number} in
 ;;
 esac
 }
-
+function Install(){
+case $1 in
+MZ)
+  if ! bash ../Install
+  then
+    exit 1
+  fi
+  source ../config
+  if ! bash ../Linux/Pnpm
+  then
+    exit 1
+  fi
+  if ! bash ../Linux/GitBot MZ
+  then
+    exit 1
+  fi
+;;
+TZ)
+  if ! bash ../Install
+  then
+    exit 1
+  fi
+  source ../config
+  if ! bash ../Linux/Pnpm
+  then
+    exit 1
+  fi
+  if ! bash ../Linux/GitBot TZ
+  then
+    exit 1
+  fi
+;;
+YN)
+  if ! bash ../Install
+  then
+    exit 1
+  fi
+  source ../config
+  if ! bash ../Linux/Yarn
+  then
+    exit 1
+  fi
+  if ! bash ../Linux/GitBot YN
+  then
+    exit 1
+  fi
+;;
+esac
+}
 function MainMenu(){
 Number=$($(TUISoftware) \
 --title "AF-Shell" \
@@ -234,12 +281,53 @@ case ${Number} in
       Pm2Name="yunzai-next"
       SecondMenu
     else
-      if ! bash ../Install
-      then
-        exit 1
-      fi
+      Install YN
+      TitleText="AF-YZ-Next"
+      BotName="Yunzai-Next"
+      COMMAND="YZ-NEXT"
+      StartCommand="node src/main"
+      Pm2Name="yunzai-next"
+      SecondMenu
     fi
     ;;
+  2)
+    if CheckInstall MZ
+    then
+      TitleText="AF-MZ"
+      BotName="Miao-Yunzai"
+      COMMAND="Miao-Yun"
+      StartCommand="node app"
+      Pm2Name="Miao-Yunzai"
+      SecondMenu
+    else
+      Install YN
+      TitleText="AF-MZ"
+      BotName="Miao-Yunzai"
+      COMMAND="Miao-Yun"
+      StartCommand="node app"
+      Pm2Name="Miao-Yunzai"
+      SecondMenu
+    fi
+  ;;
+  3)
+    if CheckInstall TZ
+    then
+      TitleText="AF-TZ"
+      BotName="TRSS-Yunzai"
+      COMMAND="TRSS Yunzai"
+      StartCommand="node app"
+      Pm2Name="TRSS-Yunzai"
+      SecondMenu
+    else
+      Install YN
+      TitleText="AF-TZ"
+      BotName="TRSS-Yunzai"
+      COMMAND="TRSS Yunzai"
+      StartCommand="node app"
+      Pm2Name="TRSS-Yunzai"
+      SecondMenu
+    fi
+  ;;
   0)
     return 5
   ;;

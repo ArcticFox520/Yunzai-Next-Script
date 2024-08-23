@@ -13,7 +13,13 @@ GithubMirror="https://mirrors.chenby.cn/"
 
 if [ -x /usr/local/NodeJS/bin/node ]
 then
+  if [ ! -d $HOME/.local/share/pnpm ];then
+        mkdir -p $HOME/.local/share/pnpm
+  fi
   export PATH=$PATH:/usr/local/NodeJS/bin
+  export PATH=$PATH:/root/.local/share/pnpm
+  export PNPM_HOME=/root/.local/share/pnpm
+  export PUPPETEER_SKIP_DOWNLOAD=true
 fi
 
 if [ $HOME/AFHOME ]
@@ -189,28 +195,6 @@ function Session(){
   jq .SelectManageSession ../config.json | sed 's|"||g'
 }
 
-function PsAll(){
-  ps all | sed '/grep/d' | sed '/dialog/d' | sed '/whiptail/d' | grep -q $2
-}
-
-function CheckStatus(){
-if tmux ls 2>&1 | grep -q $1
-then
-  return 1
-elif screen -ls 2>&1 | grep -q $1
-then
-  return 2
-elif pm2 list 2>&1 | sed '/stopped/d' | grep -q $3
-then
-  return 3
-elif PsAll
-then
-  return 4
-else
-  return 0
-fi
-}
-
 function StopBot(){
 CheckStatus $1 $2 $3
 case $? in
@@ -312,6 +296,28 @@ case $? in
   return 1
   ;;
 esac
+}
+
+function PsAll(){
+  ps all | sed '/grep/d' | sed '/dialog/d' | sed '/whiptail/d' | grep -q $1
+}
+
+function CheckStatus(){
+if tmux ls 2>&1 | grep -q $1
+then
+  return 1
+elif screen -ls 2>&1 | grep -q $1
+then
+  return 2
+elif pm2 list 2>&1 | sed '/stopped/d' | grep -q $3
+then
+  return 3
+elif PsAll $2
+then
+  return 4
+else
+  return 0
+fi
 }
 
 function StartType(){
@@ -498,7 +504,7 @@ then
   echo -e ${cyan} Redis-Server${yellow} 已经启动${background}
 else
   echo -e ${cyan} Redis-Server${yellow} 正在启动${background}
-  $(nohup redis-server 2>&1 &)
+  $(nohup redis-server > /dev/null 2>&1 &)
   until PedisCliPing
   do
     sleep 0.2s
@@ -507,8 +513,27 @@ else
 fi
 }
 
+function CheckSignApi(){
+  local file="config/config/bot.yaml"
+  SignApi=$(grep sign_api_addr ${file} | sed 's|sign_api_addr: ||g')
+  if [ -n ${SignApi} ]
+  then
+    echo -e ${yellow}正在检查签名可用性${background}
+    if curl -sL ${SignApi} | tee grep com.tencent.mobileqq
+    then
+      echo
+      echo -e ${green}签名可用${background}
+    else
+      echo
+      echo -e ${red}签名不可达${background}
+    fi
+  fi
+}
+
 function START(){
-  local Command=$1
+  CheckRedisServer
+  CheckSignApi
+  local Command="$1"
   ${Command}
   if pm2 list 2>&1 | grep $2 | grep -q online
   then

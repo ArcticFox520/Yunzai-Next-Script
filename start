@@ -71,7 +71,7 @@ then
 elif [ $(command -v apk) ]
 then
   Update apk update
-  apk add --allow-untrusted $1
+  apk add --allow-untrusted --no-cache $1
 elif [ $(command -v zypper) ]
 then
   Update zypper refresh

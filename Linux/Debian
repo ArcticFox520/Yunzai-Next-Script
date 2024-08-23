@@ -1,5 +1,5 @@
 #!/bin/env bash
-source config
+source ../config
 Package=("tar" "gzip" "xz-utils" "tmux" "screen" "wget" "curl" "pv" "git" "redis-server" "jq" "chromium")
 for PKG in ${Package[@]}
 do

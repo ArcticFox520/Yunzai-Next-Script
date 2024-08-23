@@ -1,5 +1,5 @@
 #!/bin/env bash
-source config
+source ../config
 cd $HOME
 
 echo -e ${yellow}正在修改 ${cyan}DNS配置${background}

@@ -1,6 +1,6 @@
 #!/bin/env bash
 source ../config
-if $(yarn -v > /dev/null 2>&1)
+if $(pnpm -v > /dev/null 2>&1)
 then
   exit 0
 fi
@@ -15,11 +15,11 @@ npm config set registry ${NPMMirror}
 npm config set registry ${NPMMirror}
 npm install -g npm@latest
 echo -e ${yellow}已设置为 ${cyan}${NPMMirror}${background}
-echo -e ${yellow}正在安装 ${cyan}YARN${background}
-npm install -g yarn
-echo -e ${yellow}正在设置YARN ${cyan}默认仓库${background}
-yarn config set registry ${NPMMirror}
-yarn config set registry ${NPMMirror}
+echo -e ${yellow}正在安装 ${cyan}PNPM${background}
+npm install -g pnpm
+echo -e ${yellow}正在设置PNPM ${cyan}默认仓库${background}
+pnpm config set registry ${NPMMirror}
+pnpm config set registry ${NPMMirror}
 echo -e ${green}已设置为 ${yellow}${NPMMirror}${background}
 echo -e ${green}正在安装 ${yellow}PM2${background}
 until npm install -g pm2

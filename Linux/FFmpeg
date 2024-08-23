@@ -1,10 +1,9 @@
 #!/bin/env bash
-source config
+source ../config
 if [ -e /usr/local/bin/ffmpeg ]
 then
   exit 0
 fi
-
 if CheckNetwork
 then
   FFmpegURL="https://registry.npmmirror.com/-/binary/ffmpeg-static/b6.0/ffmpeg-linux-$(Arch)"

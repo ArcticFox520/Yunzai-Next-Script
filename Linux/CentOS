@@ -1,12 +1,10 @@
 #!/bin/env bash
-source config
-
+source ../config
 if [ $(command -v dnf) ];then
   pkg="dnf"
 elif [ $(command -v yum) ];then
   pkg="yum"
 fi
-
 Package=("tar" "gzip" "xz" "tmux" "screen" "wget" "curl" "pv" "git" "jq" "redis" "chromium")
 for PKG in ${Package[@]}
 do

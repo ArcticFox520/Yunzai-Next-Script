@@ -127,9 +127,6 @@ case ${Number} in
     exit 0
   fi
 ;;
-4)
-
-;;
 0)
 exit
 ;;

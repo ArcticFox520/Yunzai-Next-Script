@@ -9,7 +9,67 @@ cyan="\033[36m"
 white="\033[37m"
 background="\033[0m"
 
-GithubMirror="https://mirrors.chenby.cn/"
+function gitclone(){
+if echo $1 | grep -q gitee
+then
+  git clone --depth=1 $1 $2
+  ReturnBcak
+fi
+MirrorNum=("gitclone" "kkgithub" "gh" "ghproxy" "github" "error")
+for i in ${MirrorNum[@]}
+do
+  case ${i} in
+  github)
+    if git clone --depth=1 $1 $2
+    then
+      return 0
+    else
+      rm -rf $2
+    fi
+    ;;
+  gitclone)
+    GitUrl=$(echo $1 | sed 's|https://github.com|https://gitclone.com/github.com|g')
+    if git clone --depth=1 ${GitUrl} $2
+    then
+      return 0
+    else
+      rm -rf $2
+    fi
+    ;;
+  kkgithub)
+    GitUrl=$(echo $1 | sed 's|https://github.com|https://kkgithub.com|g')
+    if git clone --depth=1 ${GitUrl} $2
+    then
+      return 0
+    else
+      rm -rf $2
+    fi
+    ;;
+  gh)
+    GitUrl=$(echo $1 | sed 's|https://github.com|https://gh.arcticfox.top/https://github.com|g')
+    if git clone --depth=1 ${GitUrl} $2
+    then
+      return 0
+    else
+      rm -rf $2
+    fi
+    ;;
+  ghproxy)
+    GitUrl=$(echo $1 | sed 's|https://github.com|https://mirror.ghproxy.com/https://github.com|g')
+    if git clone --depth=1 ${GitUrl} $2
+    then
+      return 0
+    else
+      rm -rf $2
+    fi
+    ;;
+  error)
+    echo -e ${yellow}仓库克隆 ${red}失败${background}
+    exit 1
+    ;;
+  esac
+done
+}
 
 function Download(){
 file="$1"
@@ -199,7 +259,7 @@ mv -f ffprobe /usr/local/bin/ffprobe
 echo -e ${green}安装完成${background}
 
 echo -e ${green}开始安装 ${yellow}ArcticFox Script${background}
-until git clone --depth=1 https://mirrors.chenby.cn/https://github.com/ArcticFox520/Yunzai-Next-Script ./AFYN
+until gitclone https://github.com/ArcticFox520/Yunzai-Next-Script ./AFYN
 do
   echo -e ${red} - ${red}克隆错误 ${cyan}3秒后重试${background}
   sleep 3s

@@ -241,7 +241,10 @@ else
 fi
 # 创建启动脚本
 start=start-${Linux}-${Version}.sh
-rm $HOME/.bashrc
+if [ -e $HOME/.bashrc ]
+then
+  rm $HOME/.bashrc
+fi
 touch $HOME/.bashrc
 echo "exec $HOME/AF-Proot/start-${Linux}-${Version}.sh 'afyz'" > $HOME/.bashrc
 cat > $start <<- FOX

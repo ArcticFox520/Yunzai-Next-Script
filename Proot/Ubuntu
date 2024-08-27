@@ -22,6 +22,18 @@ then
 	echo -e ${blue}[${red}*${blue}] ${cyan}错误 ${yellow}此脚本仅能够在termux运行${background}
 fi
 
+if ! grep -q bfsu $PREFIX/etc/apt/sources.list
+then
+  echo '# The termux repository mirror from BFSU:
+deb https://mirrors.bfsu.edu.cn/termux/apt/termux-main stable main' \
+> $PREFIX/etc/apt/sources.list
+  apt -y update
+  yes Y | apt -y upgrade
+  echo '# The termux repository mirror from BFSU:
+deb https://mirrors.bfsu.edu.cn/termux/apt/termux-main stable main' \
+> $PREFIX/etc/apt/sources.list
+fi
+
 case `dpkg --print-architecture` in
 aarch64|arm64)
 	Arch="arm64"

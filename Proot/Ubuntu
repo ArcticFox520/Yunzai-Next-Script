@@ -17,14 +17,6 @@ Linux="ubuntu"
 Version="jammy"
 
 function gitclone(){
-function ReturnBcak(){
-if [ $? == 0 ]
-then
-  return 0
-else
-  rm -rf $2
-fi
-}
 if echo $1 | grep -q gitee
 then
   git clone --depth=1 $1 $2
@@ -35,28 +27,48 @@ for i in ${MirrorNum[@]}
 do
   case ${i} in
   github)
-    git clone --depth=1 $1 $2
-    ReturnBcak
+    if git clone --depth=1 $1 $2
+    then
+      return 0
+    else
+      rm -rf $2
+    fi
     ;;
   gitclone)
     GitUrl=$(echo $1 | sed 's|https://github.com|https://gitclone.com/github.com|g')
-    git clone --depth=1 ${GitUrl} $2
-    ReturnBcak
+    if git clone --depth=1 ${GitUrl} $2
+    then
+      return 0
+    else
+      rm -rf $2
+    fi
     ;;
   kkgithub)
     GitUrl=$(echo $1 | sed 's|https://github.com|https://kkgithub.com|g')
-    git clone --depth=1 ${GitUrl} $2
-    ReturnBcak
+    if git clone --depth=1 ${GitUrl} $2
+    then
+      return 0
+    else
+      rm -rf $2
+    fi
     ;;
   gh)
     GitUrl=$(echo $1 | sed 's|https://github.com|https://gh.arcticfox.top/https://github.com|g')
-    git clone --depth=1 ${GitUrl} $2
-    ReturnBcak
+    if git clone --depth=1 ${GitUrl} $2
+    then
+      return 0
+    else
+      rm -rf $2
+    fi
     ;;
   ghproxy)
     GitUrl=$(echo $1 | sed 's|https://github.com|https://mirror.ghproxy.com/https://github.com|g')
-    git clone --depth=1 ${GitUrl} $2
-    ReturnBcak
+    if git clone --depth=1 ${GitUrl} $2
+    then
+      return 0
+    else
+      rm -rf $2
+    fi
     ;;
   error)
     echo -e ${yellow}仓库克隆 ${red}失败${background}
@@ -219,7 +231,7 @@ fi
 if gitclone https://github.com/ArcticFox520/Yunzai-Next-Script $HOME/AFProotFile
 then
   mv $HOME/AFProotFile/Proot/Install $HOME/AF-Proot/${Linux}-${Version}/root/Install
-  mkdir /data/data/com.termux/files/home/AF-Proot/proc/
+  mkdir $HOME/AF-Proot/proc/
   mv -f $HOME/AFProotFile/Proot/proc/* $HOME/AF-Proot/proc/
   mv -f $HOME/AFProotFile/Proot/.hushlogin $HOME/AF-Proot/.hushlogin
   rm -rf $HOME/AFProotFile

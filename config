@@ -139,10 +139,10 @@ fi
 }
 
 function MenuSize(){
-local HEIGHT=$(($(tput lines) - 10))
-local WIDTH=$(($(tput cols) - 10))
-local OPTION=$((${HEIGHT} - 8))
-if (( $HEIGHT <= 8 ));then
+local HEIGHT=$(($(tput lines) - 5))
+local WIDTH=$(($(tput cols) - 5))
+local OPTION=$((${HEIGHT} - 3))
+if (( $HEIGHT <= 3 ));then
   echo -e ${blue}[${red}*${blue}] ${cyan}您的屏幕高度过低.${background}
   exit
 fi
@@ -154,8 +154,8 @@ echo ${HEIGHT} ${WIDTH} ${OPTION}
 }
 
 function MsgboxSize(){
-local HEIGHT=$(($(tput lines) - 30))
-local WIDTH=$(($(tput cols) - 10))
+local HEIGHT=$(($(tput lines) - 15))
+local WIDTH=$(($(tput cols) - 5))
 if (( $HEIGHT <= 0 ));then
   echo -e ${blue}[${red}*${blue}] ${cyan}您的屏幕高度过低.${background}
   exit

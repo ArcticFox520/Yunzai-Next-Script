@@ -15,7 +15,56 @@ background="\033[0m"
 echo
 Linux="ubuntu"
 Version="jammy"
-GithubMirror="https://mirrors.chenby.cn/"
+
+function gitclone(){
+function ReturnBcak(){
+if [ $? == 0 ]
+then
+  return 0
+else
+  rm -rf $2
+fi
+}
+if echo $1 | grep -q gitee
+then
+  git clone --depth=1 $1 $2
+  ReturnBcak
+fi
+MirrorNum=("gitclone" "kkgithub" "gh" "ghproxy" "github" "error")
+for i in ${MirrorNum[@]}
+do
+  case ${i} in
+  github)
+    git clone --depth=1 $1 $2
+    ReturnBcak
+    ;;
+  gitclone)
+    GitUrl=$(echo $1 | sed 's|https://github.com|https://gitclone.com/github.com|g')
+    git clone --depth=1 ${GitUrl} $2
+    ReturnBcak
+    ;;
+  kkgithub)
+    GitUrl=$(echo $1 | sed 's|https://github.com|https://kkgithub.com|g')
+    git clone --depth=1 ${GitUrl} $2
+    ReturnBcak
+    ;;
+  gh)
+    GitUrl=$(echo $1 | sed 's|https://github.com|https://gh.arcticfox.top/https://github.com|g')
+    git clone --depth=1 ${GitUrl} $2
+    ReturnBcak
+    ;;
+  ghproxy)
+    GitUrl=$(echo $1 | sed 's|https://github.com|https://mirror.ghproxy.com/https://github.com|g')
+    git clone --depth=1 ${GitUrl} $2
+    ReturnBcak
+    ;;
+  error)
+    echo -e ${yellow}仓库克隆 ${red}失败${background}
+    exit 1
+    ;;
+  esac
+done
+}
 
 if [ ! "$(uname -o)" = "Android" ]
 then
@@ -167,7 +216,7 @@ then
   rm -rf $HOME/AFProotFile
 fi
 
-if git clone --depth=1 ${GithubMirror}https://github.com/ArcticFox520/Yunzai-Next-Script $HOME/AFProotFile
+if gitclone https://github.com/ArcticFox520/Yunzai-Next-Script $HOME/AFProotFile
 then
   mv $HOME/AFProotFile/Proot/Install $HOME/AF-Proot/${Linux}-${Version}/root/Install
   mkdir /data/data/com.termux/files/home/AF-Proot/proc/

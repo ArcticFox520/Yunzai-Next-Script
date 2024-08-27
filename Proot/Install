@@ -270,3 +270,6 @@ AF_HOME_Path="$(pwd)"
 sed -i "s|AF_HOME_Path|${AF_HOME_Path}|g" afyn
 mv -f afyn /usr/local/bin/afyn
 echo -e ${yellow} - ${yellow}安装成功${background}
+
+cd $HOME
+rm -rf Install xtradeb-ubuntu-apps.gpg

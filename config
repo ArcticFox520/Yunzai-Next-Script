@@ -613,7 +613,7 @@ function START(){
 function ProgressBar(){
   {
     i=0
-    until CheckStatus $1 $2 $3
+    while CheckStatus $1 $2 $3
     do
       echo $((i++))
       if echo ${i} | grep -q 100

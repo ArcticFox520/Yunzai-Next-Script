@@ -25,7 +25,7 @@ case ${Number} in
     then
       if ProgressBar ${BotName} ${COMMAND} ${Pm2Name}
       then
-        if $($(TUISoftware) --title "${TitleText}"  \
+        if ($(TUISoftware) --title "${TitleText}"  \
         --yes-button "打开日志" \
         --no-button "返回菜单" \
         --yesno "${BotName} [启动成功]" \

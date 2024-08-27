@@ -97,7 +97,7 @@ export LANG=zh_CN.UTF-8
 echo -e ${green}已修改为 ${yellow}中文${background}
 
 echo -e ${green}正在安装 ${yellow}依赖软件${background}
-apt install -y tar gzip xz-utils tmux screen curl wget pv git redis-server jq fonts-wqy*
+apt install -y tar gzip xz-utils tmux screen curl wget pv git redis-server jq fonts-wqy* gnupg
 echo -e ${green}安装完成${background}
 
 echo -e ${green}开始安装 ${yellow}Chromium${background}
@@ -169,24 +169,24 @@ echo -e ${green}已设置为 ${yellow}npmmirror${background}
 
 echo -e ${green}正在安装 ${yellow}YARN${background}
 npm install -g yarn
-echo -e ${green}正在设置PNPM ${yellow}默认仓库${background}
+echo -e ${green}正在设置YARN ${yellow}默认仓库${background}
 yarn config set registry ${NPMMirror}
 yarn config set registry ${NPMMirror}
 echo -e ${green}已设置为 ${yellow}npmmirror${background}
 
+echo -e ${green}正在安装 ${yellow}PNPM${background}
+npm install -g PNPM
+echo -e ${green}正在设置PNPM ${yellow}默认仓库${background}
+pnpm config set registry ${NPMMirror}
+pnpm config set registry ${NPMMirror}
+echo -e ${green}已设置为 ${yellow}npmmirror${background}
+
 echo -e ${green}正在安装 ${yellow}PNM2${background}
-until yarn install -g pm2
+until npm install -g pm2
 do
   echo -e ${cyan}安装失败 ${yellow}三秒后重试${background}
   sleep 3s
 done
-echo -e ${green}安装完成${background}
-
-echo -e ${green}正在安装 ${yellow}yq${background}
-URL="https://mirrors.chenby.cn/https://github.com/mikefarah/yq/releases/download/v4.44.2/yq_linux_arm64"
-Download yq ${URL}
-mv yq /usr/local/bin/yq
-chmod +x /usr/local/bin/yq
 echo -e ${green}安装完成${background}
 
 echo -e ${green}正在安装 ${yellow}ffmpeg${background}

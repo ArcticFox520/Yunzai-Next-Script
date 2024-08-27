@@ -597,10 +597,10 @@ function CheckSignApi(){
 
 function START(){
   CheckRedisServer
-  local Command="$1 $2"
+  local Command="$1"
   ${Command}
   Pm2List=$(pm2 list 2>&1)
-  if echo ${Pm2List} | grep -q $3
+  if echo ${Pm2List} | grep -q $2
   then
     if pm2 list 2>&1 | grep $3 | grep -q online
     then

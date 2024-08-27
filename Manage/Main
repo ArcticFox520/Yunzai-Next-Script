@@ -22,7 +22,7 @@ case ${Number} in
 1)
   if StartType ${BotName} ${COMMAND} ${Pm2Name}
   then
-    if Error=$(ManageSession $(Session) start "${BotName}" "${START} && START "${StartCommand}" ${Pm2Name}")
+    if Error=$(ManageSession $(Session) start "${BotName}" "${START} && eval START '${StartCommand}' ${Pm2Name}")
     then
       if ProgressBar ${BotName} ${COMMAND} ${Pm2Name}
       then

@@ -622,7 +622,7 @@ function ProgressBar(){
       fi
     done
     return 0
-  } | $(TUISoftware) --gauge "${BotName} [正在启动]" $(MsgboxSize)
+  } | $(TUISoftware) --gauge "${BotName} [正在启动]" $(MsgboxSize) 0
 }
 
 function CheckPath(){

@@ -257,7 +257,7 @@ fi
 }
 
 function Session(){
-  jq .SelectManageSession ../config.json | sed 's|"||g'
+  jq .SelectManageSession $AFHOME/config.json | sed 's|"||g'
 }
 
 function StopBot(){
@@ -597,13 +597,15 @@ function CheckSignApi(){
 
 function START(){
   CheckRedisServer
-  CheckSignApi
   local Command="$1"
   ${Command}
-  if pm2 list 2>&1 | grep $2 | grep -q online
+  Pm2List=$(pm2 list 2>&1)
+  if echo ${Pm2List} | grep -q $2
   then
-    pm2 delete $2 > /dev/null 2>&1
-    START $1 $2
+    if pm2 list 2>&1 | grep $2 | grep -q online
+      pm2 delete $2 > /dev/null 2>&1
+      START $1 $2
+    fi
   fi
 }
 
@@ -613,7 +615,7 @@ function ProgressBar(){
     until CheckStatus $1 $2 $3
     do
       echo $((i++))
-      if [ ${i} == 100 ]
+      if echo ${i} | grep -q 100
       then
         return 1
       fi

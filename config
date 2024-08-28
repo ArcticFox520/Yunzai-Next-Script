@@ -144,10 +144,12 @@ local WIDTH=$(($(tput cols) - 5))
 local OPTION=$((${HEIGHT} - 7))
 if (( $HEIGHT <= 3 ));then
   echo -e ${blue}[${red}*${blue}] ${cyan}您的屏幕高度过低.${background}
+  echo -e ${blue}[${red}*${blue}] ${cyan}考虑缩小终端字体.${background}
   exit
 fi
 if (( $WIDTH <= 0 ));then
   echo -e ${blue}[${red}*${blue}] ${cyan}您的屏幕宽度度过窄.${background}
+  echo -e ${blue}[${red}*${blue}] ${cyan}考虑缩小终端字体.${background}
   exit
 fi
 echo ${HEIGHT} ${WIDTH} ${OPTION}
@@ -158,10 +160,12 @@ local HEIGHT=$(($(tput lines) - 15))
 local WIDTH=$(($(tput cols) - 5))
 if (( $HEIGHT <= 0 ));then
   echo -e ${blue}[${red}*${blue}] ${cyan}您的屏幕高度过低.${background}
+  echo -e ${blue}[${red}*${blue}] ${cyan}考虑缩小终端字体.${background}
   exit
 fi
 if (( $WIDTH <= 0 ));then
   echo -e ${blue}[${red}*${blue}] ${cyan}您的屏幕宽度度过窄.${background}
+  echo -e ${blue}[${red}*${blue}] ${cyan}考虑缩小终端字体.${background}
   exit
 fi
 echo ${HEIGHT} ${WIDTH}
@@ -641,7 +645,7 @@ function CheckPath(){
 
 function CheckInstall(){
   case $1 in
-  YN)
+  YN|Yunzai-Next)
     if CheckPath Yunzai-Next yunzaijs
     then
       return 0
@@ -649,7 +653,7 @@ function CheckInstall(){
       return 1
     fi
     ;;
-  MZ)
+  MZ|Miao-Yunzai)
     if CheckPath Miao-Yunzai
     then
       return 0
@@ -657,7 +661,7 @@ function CheckInstall(){
       return 1
     fi
     ;;
-  TZ)
+  TZ|TRSS-Yunzai)
     if CheckPath TRSS-Yunzai Yunzai
     then
       return 0

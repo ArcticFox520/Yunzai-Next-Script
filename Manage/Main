@@ -2,7 +2,6 @@
 source ../config
 
 function SecondMenu(){
-START="source $AFHOME/config && cd ${BotPath}"
 Number=$($(TUISoftware) \
 --title "${TitleText}" \
 --menu "$(MenuTips)" \
@@ -22,8 +21,7 @@ case ${Number} in
 1)
   if StartType ${BotName} ${COMMAND} ${Pm2Name}
   then
-    Command='"'${START}' && START '\'${StartCommand}\'' '${Pm2Name}'"'
-    if Error=$(ManageSession $(Session) start "${BotName}" "${Command}")
+    if Error=$(ManageSession $(Session) start "${BotName}" "afyn ${BotName} start")
     then
       if ProgressBar ${BotName} ${COMMAND} ${Pm2Name}
       then
